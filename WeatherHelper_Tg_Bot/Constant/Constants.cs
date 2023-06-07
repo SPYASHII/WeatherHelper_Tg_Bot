@@ -2,6 +2,6 @@
 {
     public class Constants
     {
-        public const string url = @"https://localhost:7167/" + "WeatherApi";
+        public const string url = @"https://weatherapi20230607070156.azurewebsites.net/" + "WeatherApi";
     }
 }

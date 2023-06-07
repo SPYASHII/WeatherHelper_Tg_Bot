@@ -1,34 +1,30 @@
+using Microsoft.VisualBasic;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Telegram.Bot;
+using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using WeatherAPI.Models;
 using WeatherHelperTGBOT.Constant;
 using WeatherHelperTGBOT.Services;
+using Constants = WeatherHelperTGBOT.Constant.Constants;
 
 class Program
 {
+    static ITelegramBotClient bot = new TelegramBotClient("6198228281:AAEwaFhAqYRT2EtQYtQMXe5acd8bDVjHHAE");
     static BotApiService botService = new BotApiService();
-    static Dictionary<long, string> location = new Dictionary<long, string> { };
-    static HttpClient httpClient;
-    static void Main()
+    static HttpClient httpClient = new HttpClient(new SocketsHttpHandler
     {
+        PooledConnectionLifetime = TimeSpan.FromMinutes(2)
+    });
+    static void Main(string[] args)
+    {
+        bot.StartReceiving(
+            Update,
+            Error
+        );
 
-        var socketsHandler = new SocketsHttpHandler
-        {
-            PooledConnectionLifetime = TimeSpan.FromMinutes(2)
-        };
-        httpClient = new HttpClient(socketsHandler);
-
-        var client = new TelegramBotClient("6198228281:AAEwaFhAqYRT2EtQYtQMXe5acd8bDVjHHAE");
-
-        client.StartReceiving(Update, Error);
-
-        var Notification = new NotificationService(client);
-
-        Notification.Start();
-
-        var builder = WebApplication.CreateBuilder();
+        var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
         builder.Services.AddRazorPages();
@@ -39,6 +35,7 @@ class Program
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Error");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
 
@@ -53,7 +50,8 @@ class Program
 
         app.Run();
     }
-    static async Task Update(ITelegramBotClient botClient, Update update, CancellationToken token)
+
+    public static async Task Update(ITelegramBotClient botClient, Update update, CancellationToken token)
     {
         try
         {
@@ -468,7 +466,7 @@ class Program
         }
     }
 
-    static async Task Error(ITelegramBotClient botClient, Exception ex, CancellationToken token)
+    public static async Task Error(ITelegramBotClient botClient, Exception ex, CancellationToken token)
     {
         Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(ex));
     }
