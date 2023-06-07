@@ -38,7 +38,7 @@ namespace WeatherHelperTGBOT.Services
                     bool notification = false;
                     long chatId = user.chatId;
 
-                    TimeSpan notificationTime = user.notification.notificationTime.AddHours(3).TimeOfDay;
+                    TimeSpan notificationTime = user.notification.notificationTime.TimeOfDay;
 
                     if (currentTime.Hours == notificationTime.Hours)
                     {

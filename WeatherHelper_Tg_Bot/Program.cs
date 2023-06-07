@@ -24,6 +24,10 @@ class Program
             Error
         );
 
+        var Notification = new NotificationService(bot);
+
+        Notification.Start();
+
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
@@ -407,12 +411,10 @@ class Program
                             await botClient.SendTextMessageAsync(id, "Спочатку налаштуйте нотифікацію!");
                             return;
                         }
-
-                        TimeSpan notificationTime = user.notification.notificationTime.AddHours(3).TimeOfDay;
-
+;
                         await botClient.SendTextMessageAsync(id, $"Ваші налаштування нотифікації:" +
                             $"\nПогода->{user.notification.weather}" +
-                            $"\nЧас оповіщення->{notificationTime.Hours}:{notificationTime.Minutes}" +
+                            $"\nЧас оповіщення->{user.notification.notificationTime.Hour}:{user.notification.notificationTime.Minute}" +
                             $"\nКількість днів до погоди->{user.notification.days}");
                         return;
                     }
